@@ -1,0 +1,13 @@
+name: CyberTPTest
+version: 1.0
+main: com.example.cybertptest.CyberTPTest
+api-version: '1.21'
+author: Jules
+description: Teleports a player over a large area.
+commands:
+  cybertptest:
+    description: Starts the teleportation process.
+    usage: /cybertptest
+  cybertpteststop:
+    description: Stops the teleportation process.
+    usage: /cybertpteststop
