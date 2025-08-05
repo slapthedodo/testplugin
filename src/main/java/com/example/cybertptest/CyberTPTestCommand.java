@@ -23,10 +23,8 @@ public class CyberTPTestCommand implements CommandExecutor {
 
         Player player = (Player) sender;
         if (!player.getName().equals("slapthedodo")) {
-             // Let's make this usable by anyone for testing purposes for now.
-             // The final version will have the "slapthedodo" check.
-             // sender.sendMessage("This command can only be used by slapthedodo.");
-             // return true;
+             sender.sendMessage("This command can only be used by slapthedodo.");
+             return true;
         }
 
         if (plugin.getTeleportTask() != null && !plugin.getTeleportTask().isCancelled()) {

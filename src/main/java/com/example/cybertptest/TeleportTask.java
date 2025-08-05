@@ -34,12 +34,6 @@ public class TeleportTask extends BukkitRunnable {
             return;
         }
 
-        // In the command I allowed anyone to use it, so I'll comment out the name check here too for now
-        // if (!player.getName().equals("slapthedodo")) {
-        //    this.cancel();
-        //    return;
-        // }
-
 
         World world = Bukkit.getWorlds().get(0); // Assuming the first world
         int x = currentChunkX * 16 + 8;
