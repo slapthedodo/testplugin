@@ -40,7 +40,7 @@ public class CyberTPTestCommand implements CommandExecutor {
 
         TeleportTask task = new TeleportTask(plugin, player, startChunkX, startChunkZ);
         plugin.setTeleportTask(task);
-        task.runTaskTimer(plugin, 0L, 20L); // 1000ms delay (20 ticks)
+        task.runTaskTimer(plugin, 0L, 40L); // 2000ms delay (40 ticks)
 
         return true;
     }

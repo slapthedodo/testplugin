@@ -72,6 +72,11 @@ public class TeleportTask extends BukkitRunnable {
                 player.setAllowFlight(allowFlight);
                 if (success) {
                     plugin.getLogger().info("Teleported " + player.getName() + " to " + x + ", " + y + ", " + z);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     plugin.getLogger().warning("Teleportation failed for " + player.getName() + " to " + x + ", " + y + ", " + z);
                 }
