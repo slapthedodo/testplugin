@@ -33,8 +33,8 @@ public class CyberTPTestCommand implements CommandExecutor {
         }
 
         FileConfiguration config = plugin.getConfig();
-        int startChunkX = config.getInt("lastChunk.x", -730);
-        int startChunkZ = config.getInt("lastChunk.z", -831);
+        int startChunkX = config.getInt("lastChunk.x", -718);
+        int startChunkZ = config.getInt("lastChunk.z", -819);
 
         sender.sendMessage("Starting teleportation process...");
 

@@ -1,8 +1,12 @@
 package com.example.cybertptest;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,17 +17,22 @@ public class TeleportTask extends BukkitRunnable {
     private int currentChunkX;
     private int currentChunkZ;
 
-    private final int endChunkX = 1145;
-    private final int endChunkZ = 1044;
+    private final int startChunkX = -718;
+    private final int startChunkZ = -819;
+    private final int endChunkX = 1157;
+    private final int endChunkZ = 1056;
 
     private long lastMessageTime = 0;
     private final long totalChunks = 1876L * 1876L;
+    private final BossBar bossBar;
 
-    public TeleportTask(CyberTPTest plugin, Player player, int startChunkX, int startChunkZ) {
+    public TeleportTask(CyberTPTest plugin, Player player, int currentChunkX, int currentChunkZ) {
         this.plugin = plugin;
         this.player = player;
-        this.currentChunkX = startChunkX;
-        this.currentChunkZ = startChunkZ;
+        this.currentChunkX = currentChunkX;
+        this.currentChunkZ = currentChunkZ;
+        this.bossBar = Bukkit.createBossBar("CyberTPTest", BarColor.BLUE, BarStyle.SOLID);
+        this.bossBar.addPlayer(player);
     }
 
     @Override
@@ -47,23 +56,26 @@ public class TeleportTask extends BukkitRunnable {
         plugin.getLogger().info("Player is online and is slapthedodo. Proceeding with teleport.");
 
         World world = Bukkit.getWorlds().get(0); // Assuming the first world
-        int x = currentChunkX * 16 + 8;
-        int z = currentChunkZ * 16 + 8;
-        int y = 280;
+        world.getChunkAtAsync(currentChunkX, currentChunkZ).thenAccept(chunk -> {
+            int x = currentChunkX * 16 + 8;
+            int z = currentChunkZ * 16 + 8;
+            int y = 235;
 
-        Location location = new Location(world, x, y, z);
-        player.teleportAsync(location).thenAccept(success -> {
-            if (success) {
-                plugin.getLogger().info("Teleported " + player.getName() + " to " + x + ", " + y + ", " + z);
-            } else {
-                plugin.getLogger().warning("Teleportation failed for " + player.getName() + " to " + x + ", " + y + ", " + z);
-            }
+            Location location = new Location(world, x, y, z);
+            player.teleportAsync(location).thenAccept(success -> {
+                if (success) {
+                    plugin.getLogger().info("Teleported " + player.getName() + " to " + x + ", " + y + ", " + z);
+                } else {
+                    plugin.getLogger().warning("Teleportation failed for " + player.getName() + " to " + x + ", " + y + ", " + z);
+                }
+            });
         });
+
 
         // Update chunk coordinates
         currentChunkZ++;
         if (currentChunkZ > endChunkZ) {
-            currentChunkZ = -831;
+            currentChunkZ = startChunkZ;
             currentChunkX++;
         }
 
@@ -79,20 +91,20 @@ public class TeleportTask extends BukkitRunnable {
         plugin.getConfig().set("lastChunk.z", currentChunkZ);
         plugin.saveConfig();
 
-        // Send progress message every 20 seconds
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastMessageTime > 20000) {
-            lastMessageTime = currentTime;
-            long chunksDone = (long)(currentChunkX + 730) * 1876 + (currentChunkZ + 831);
-            long chunksRemaining = totalChunks - chunksDone;
-            double secondsRemaining = chunksRemaining * 0.4;
-            player.sendMessage("Estimated time remaining: " + formatDuration(secondsRemaining));
-        }
+        // Update Boss Bar
+        long chunksDone = (long)(currentChunkX - startChunkX) * (endChunkZ - startChunkZ + 1) + (currentChunkZ - startChunkZ);
+        double progress = (double) chunksDone / totalChunks;
+        bossBar.setProgress(Math.max(0.0, Math.min(1.0, progress)));
+
+        long chunksRemaining = totalChunks - chunksDone;
+        double secondsRemaining = chunksRemaining * 0.4;
+        bossBar.setTitle("Estimated time remaining: " + formatDuration(secondsRemaining));
     }
 
     @Override
     public void cancel() {
         super.cancel();
+        bossBar.removePlayer(player);
         plugin.setTeleportTask(null);
     }
 
