@@ -63,10 +63,13 @@ public class TeleportTask extends BukkitRunnable {
 
             Location location = new Location(world, x, y, z);
 
+            boolean allowFlight = player.getAllowFlight();
+            player.setAllowFlight(true);
             boolean flying = player.isFlying();
             player.setFlying(true);
             player.teleportAsync(location).thenAccept(success -> {
                 player.setFlying(flying);
+                player.setAllowFlight(allowFlight);
                 if (success) {
                     plugin.getLogger().info("Teleported " + player.getName() + " to " + x + ", " + y + ", " + z);
                 } else {
