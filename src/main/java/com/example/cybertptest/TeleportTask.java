@@ -28,7 +28,7 @@ public class TeleportTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!player.isOnline() || !player.getName().equals("slapthedodo")) {
+        if (!player.isOnline() || !player.getName().equalsIgnoreCase("slapthedodo")) {
             // Player went offline or is not slapthedodo anymore
             this.cancel();
             return;

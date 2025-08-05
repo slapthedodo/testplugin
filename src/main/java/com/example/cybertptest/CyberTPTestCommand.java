@@ -22,7 +22,7 @@ public class CyberTPTestCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if (!player.getName().equals("slapthedodo")) {
+        if (!player.getName().equalsIgnoreCase("slapthedodo")) {
              sender.sendMessage("This command can only be used by slapthedodo.");
              return true;
         }
