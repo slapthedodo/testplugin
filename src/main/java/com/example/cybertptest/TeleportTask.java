@@ -74,6 +74,11 @@ public class TeleportTask extends BukkitRunnable {
             return;
         }
 
+        // Save the current chunk to the config
+        plugin.getConfig().set("lastChunk.x", currentChunkX);
+        plugin.getConfig().set("lastChunk.z", currentChunkZ);
+        plugin.saveConfig();
+
         // Send progress message every 20 seconds
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastMessageTime > 20000) {
@@ -88,9 +93,6 @@ public class TeleportTask extends BukkitRunnable {
     @Override
     public void cancel() {
         super.cancel();
-        plugin.getConfig().set("lastChunk.x", currentChunkX);
-        plugin.getConfig().set("lastChunk.z", currentChunkZ);
-        plugin.saveConfig();
         plugin.setTeleportTask(null);
     }
 
