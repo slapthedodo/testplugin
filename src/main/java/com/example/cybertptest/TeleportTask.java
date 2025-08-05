@@ -28,12 +28,23 @@ public class TeleportTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!player.isOnline() || !player.getName().equalsIgnoreCase("slapthedodo")) {
-            // Player went offline or is not slapthedodo anymore
+        plugin.getLogger().info("Teleport task running...");
+
+        if (!player.isOnline()) {
+            plugin.getLogger().info("Player is not online. Cancelling task.");
+            player.sendMessage("Teleportation task cancelled because you are not online.");
             this.cancel();
             return;
         }
 
+        if (!player.getName().equalsIgnoreCase("slapthedodo")) {
+            plugin.getLogger().info("Player is not slapthedodo. Cancelling task.");
+            player.sendMessage("Teleportation task cancelled because you are not slapthedodo.");
+            this.cancel();
+            return;
+        }
+
+        plugin.getLogger().info("Player is online and is slapthedodo. Proceeding with teleport.");
 
         World world = Bukkit.getWorlds().get(0); // Assuming the first world
         int x = currentChunkX * 16 + 8;
@@ -41,7 +52,13 @@ public class TeleportTask extends BukkitRunnable {
         int y = 280;
 
         Location location = new Location(world, x, y, z);
-        player.teleportAsync(location);
+        player.teleportAsync(location).thenAccept(success -> {
+            if (success) {
+                plugin.getLogger().info("Teleported " + player.getName() + " to " + x + ", " + y + ", " + z);
+            } else {
+                plugin.getLogger().warning("Teleportation failed for " + player.getName() + " to " + x + ", " + y + ", " + z);
+            }
+        });
 
         // Update chunk coordinates
         currentChunkZ++;
